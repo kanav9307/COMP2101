@@ -10,9 +10,7 @@ echo "
 Rolling...
 $(( RANDOM % 6 + 1)) rolled
 "
-
 echo "
 Rolling...
 $(( RANDOM % 6 + 1)), $(( RANDOM % 6 + 1)), $(( RANDOM % 6 + 1)), $(( RANDOM % 6 + 1)), $(( RANDOM % 6 + 1)) rolled
 "
-

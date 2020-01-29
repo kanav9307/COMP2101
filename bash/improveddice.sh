@@ -2,7 +2,6 @@
 #
 # this script rolls a pair of six-sided dice and displays both the rolls
 #
-
 # Task 1:
 #  put the number of sides in a variable which is used as the range for the random number
 #  put the bias, or minimum value for the generated number in another variable
