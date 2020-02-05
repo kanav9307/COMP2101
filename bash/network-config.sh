@@ -40,7 +40,7 @@ lan_hostname=$(getent hosts $lan_ipaddress | awk '{print $1}')
 external_ip=$(curl -s icanhazip.com)
 external_name=$(getent hosts $external_ip | awk '{print $2}')
 router_address=$(route -n | grep 'UG[ \t]' | awk '{print $2}')
-router_hostname=$(route | grep "default" | awk '{ print $2 }')
+router_hostname=$(route | grep "default" | awk '{print $2}')
 
 cat <<EOF
 Hostname        : $myhostname
