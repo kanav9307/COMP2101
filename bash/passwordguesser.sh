@@ -8,7 +8,6 @@
 #         The if command should tell them they got it wrong
 # TASK 3: Improve it by giving them 5 tries to get it right before failing
 #           *** Do not use the exit command, and do not use a loop (e.g. while or for)
-
 referenceString="Password"
 read -s -p "Guess the password:" myString
 echo
