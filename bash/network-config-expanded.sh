@@ -34,7 +34,7 @@ default_router_name=$(getent hosts $default_router_address|awk '{print $2}')
 
 # finding external information relies on curl being installed and relies on live internet connection
 external_address=$(curl -s icanhazip.com)
-external_name=$(getent hosts $external_address | awk '{print $2}')
+external_name=$(getent hosts $external_name | awk '{print $2}')
 
 
 cat <<EOF
@@ -61,29 +61,33 @@ EOF
 # Per-interface report
 #####
 # define the interface being summarized
+interfaces=$(ifconfig |grep -w -o '^[^ ][^ ]*:' | tr -d :)
+
+for interface in $interfaces; do
 
 # Find an address and hostname for the interface being summarized
 # we are assuming there is only one IPV4 address assigned to this interface
-
+ipv4_address=$(ip a s $interface |awk -F '[/ ]+' '/inet /{print $3}')
+ipv4_hostname=$(getent hosts $ipv4_address | awk '{print $2}')
 # Identify the network number for this interface and its name if it has one
-count=$(lshw -class network | awk '/logical name:/{print $3}' | wc -l)
-for((i=1;i<=$count;i+=1));
-do
-  interface=$(lshw -class network |
-    awk '/logical name:/{print $3}' |
-      awk -v j=$i 'NR==j{print $1; exit}')
-  if [[ $interface = lo* ]] ; then continue ; fi
-  ipv4_address=$(ip a s $interface | awk -F '[/ ]+' '/inet /{print $3}')
-  ipv4_hostname=$(getent hosts $ipv4_address | awk '{print $2}')
   network_address=$(ip route list dev $interface scope link|cut -d ' ' -f 1)
   network_number=$(cut -d / -f 1 <<<"$network_address")
   network_name=$(getent networks $network_number|awk '{print $1}')
-  echo Interface $interface:
-  echo ===============
-  echo Address         : $ipv4_address
-  echo Name            : $ipv4_hostname
-  echo Network Address : $network_address
-  echo Network Name    : $network_name
+
+
+
+cat <<EOF
+
+
+  Interface $interface:
+  ===============
+   Address         : $ipv4_address
+   Name            : $ipv4_hostname
+   Network Address : $network_address
+   Network Name    : $network_name
+
+
+EOF
 done
 #####
 # End of per-interface report
