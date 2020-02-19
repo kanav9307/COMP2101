@@ -34,7 +34,7 @@ default_router_name=$(getent hosts $default_router_address|awk '{print $2}')
 
 # finding external information relies on curl being installed and relies on live internet connection
 external_address=$(curl -s icanhazip.com)
-external_name=$(getent hosts $external_name | awk '{print $2}')
+external_name=$(getent hosts $external_address| awk '{print $2}')
 
 
 cat <<EOF
@@ -64,7 +64,7 @@ EOF
 interfaces=$(ifconfig |grep -w -o '^[^ ][^ ]*:' | tr -d :)
 
 for interface in $interfaces; do
-
+if [[ $interface = lo* ]] ; then continue ; fi
 # Find an address and hostname for the interface being summarized
 # we are assuming there is only one IPV4 address assigned to this interface
 ipv4_address=$(ip a s $interface |awk -F '[/ ]+' '/inet /{print $3}')
@@ -77,16 +77,12 @@ ipv4_hostname=$(getent hosts $ipv4_address | awk '{print $2}')
 
 
 cat <<EOF
-
-
   Interface $interface:
   ===============
    Address         : $ipv4_address
    Name            : $ipv4_hostname
    Network Address : $network_address
    Network Name    : $network_name
-
-
 EOF
 done
 #####
