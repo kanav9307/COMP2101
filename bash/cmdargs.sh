@@ -1,11 +1,17 @@
 #!/bin/bash
 # This script demonstrates how the shift command works
+vvar=0
+dvar=0
+# create an empty array to put the command line arguments into
 myargs=()
+# loop through the command line arguments
 while [ $# -gt 0 ]; do
   # tell the user how many things are left on the command line
   echo "There are $# things left to process on the command line."
+  echo "Myarg array contents ${myargs[@]}"
+  # add whatever is in $1 to the myargs array
   myargs+=("$1")
-  # it tells the user what we did
+  # tell the user what we did
   echo "Added \'$1\' to the arguments array"
 # TASK 1: instead of just adding arguments to an array, use a case statement to recognize some options
 #          Options to recognize: -h for help, -v for verbose mode, -d N for debug mode with N being a single digit number
@@ -18,14 +24,19 @@ echo "Processing '$1'."
 case $1 in
 	-h )
     echo 'You added "-h" for help.'
+	echo 'Processing -h now.'
     ;;
     -v )
     echo 'You added "-v" for varbose.'
+	echo 'Processing -v now.'
+	vvar=1
     ;;
     -d )
 	case "$2" in
 		[1-5] )
 		echo "You added -d for debug level $2."
+		echo 'Processing -d now.'
+		dvar=$2
 		shift
 		;;
     *)
@@ -38,11 +49,13 @@ case $1 in
     echo "Error: unkown value $errors"
     ;;
     esac
+  # each time through the loop, shift the arguments left
+  # this decrements the argument count for us
   shift
   # tell the user we shifted things
   echo "Shifted command line, leaving $# things left to process."
   echo "--------------------------"
-
+  # go back to the top of the loop to see if anything is left to work on
 done
 echo "Done"
 
@@ -50,3 +63,13 @@ echo "Done"
 #         Tell the user if vebose mode is on
 #         Tell the user if debug mode is on and if it is, what number it is set to
 #         Print out the myargs array with a label
+if [ $vvar = 1 ]; then
+  echo "Varbose mode is on."
+else
+  echo "Varbose mode is off."
+fi
+if [ $dvar -gt 0 ]; then
+  echo "Debug Mode is running with $dvar level."
+else
+  echo "Debug Mode is off."
+fi
